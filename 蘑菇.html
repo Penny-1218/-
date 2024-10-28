@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>顶蘑菇游戏</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+        }
+        #game-container {
+            width: 300px;
+            height: 400px;
+            background-color: #98fb98;
+            position: relative;
+            border: 2px solid #4a734a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #mushroom {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            cursor: pointer;
+            transition: transform 0.1s;
+            user-select: none;
+            font-size: 40px;
+        }
+        #mushroom:active {
+            transform: scale(0.9);
+        }
+        #score {
+            font-size: 24px;
+            margin: 10px;
+        }
+        #timer {
+            font-size: 20px;
+            margin: 10px;
+        }
+        #start-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        #start-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>顶蘑菇游戏</h1>
+    <div id="score">分数: 0</div>
+    <div id="timer">时间: 30s</div>
+    <div id="game-container">
+        <div id="mushroom">🍄</div>
+    </div>
+    <button id="start-btn">开始游戏</button>
+
+    <script>
+        const mushroom = document.getElementById('mushroom');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const startBtn = document.getElementById('start-btn');
+        const container = document.getElementById('game-container');
+
+        let score = 0;
+        let timeLeft = 30;
+        let gameInterval;
+        let isPlaying = false;
+
+        function placeMushroom() {
+            const maxX = container.clientWidth - mushroom.clientWidth;
+            const maxY = container.clientHeight - mushroom.clientHeight;
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            mushroom.style.left = randomX + 'px';
+            mushroom.style.top = randomY + 'px';
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            timerDisplay.textContent = `时间: ${timeLeft}s`;
+            
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+
+        function startGame() {
+            if (isPlaying) return;
+            
+            isPlaying = true;
+            score = 0;
+            timeLeft = 30;
+            scoreDisplay.textContent = `分数: ${score}`;
+            timerDisplay.textContent = `时间: ${timeLeft}s`;
+            startBtn.textContent = '游戏中...';
+            
+            gameInterval = setInterval(updateTimer, 1000);
+            placeMushroom();
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            isPlaying = false;
+            startBtn.textContent = '重新开始';
+            alert(`游戏结束！\n你的得分是: ${score}`);
+        }
+
+        mushroom.addEventListener('click', () => {
+            if (!isPlaying) return;
+            
+            score++;
+            scoreDisplay.textContent = `分数: ${score}`;
+            placeMushroom();
+        });
+
+        startBtn.addEventListener('click', startGame);
+    </script>
+</body>
+</html>
